@@ -1,5 +1,5 @@
-import type { LogLevel, LoggingParameters, LogOutput, Logger } from "./types";
-import { getLogContext } from "./context";
+import { getLogContext } from './context';
+import type { LogLevel, LoggingParameters, LogOutput, Logger } from './types';
 
 const createLogObject = (level: LogLevel, parameters: LoggingParameters): LogOutput => {
   const context = getLogContext();
@@ -29,8 +29,8 @@ const extractMessage = (parameters: LoggingParameters): unknown => {
   } else {
     const [message, error] = parameters;
     const errorMessage = error instanceof Error
-        ? (error.message.trim() || error.toString())
-        : String(error);
+      ? (error.message.trim() || error.toString())
+      : String(error);
     return `${message} ${errorMessage}`;
   }
 };
@@ -51,8 +51,8 @@ const log = (level: LogLevel, parameters: LoggingParameters): void => {
 };
 
 export const logger: Logger = {
-  debug: (...parameters: LoggingParameters) => log("debug", parameters),
-  info: (...parameters: LoggingParameters) => log("info", parameters),
-  warn: (...parameters: LoggingParameters) => log("warn", parameters),
-  error: (...parameters: LoggingParameters) => log("error", parameters),
+  debug: (...parameters: LoggingParameters) => log('debug', parameters),
+  info: (...parameters: LoggingParameters) => log('info', parameters),
+  warn: (...parameters: LoggingParameters) => log('warn', parameters),
+  error: (...parameters: LoggingParameters) => log('error', parameters),
 } as const;

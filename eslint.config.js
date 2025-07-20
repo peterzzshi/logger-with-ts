@@ -4,8 +4,8 @@ import typescriptParser from '@typescript-eslint/parser';
 import importPlugin from 'eslint-plugin-import';
 import unusedImports from 'eslint-plugin-unused-imports';
 
-// Common globals used across all TypeScript files
-const commonGlobals = {
+// Node.js globals - more focused for a Node.js library
+const nodeGlobals = {
 	console: 'readonly',
 	process: 'readonly',
 	Buffer: 'readonly',
@@ -15,20 +15,12 @@ const commonGlobals = {
 	module: 'readonly',
 	require: 'readonly',
 	exports: 'readonly',
-	// DOM globals
-	document: 'readonly',
-	window: 'readonly',
-	HTMLElement: 'readonly',
-	HTMLButtonElement: 'readonly',
-	HTMLInputElement: 'readonly',
-	Element: 'readonly',
-	NodeListOf: 'readonly',
-	Event: 'readonly',
-	MouseEvent: 'readonly',
-	KeyboardEvent: 'readonly',
-	FocusEvent: 'readonly',
-	SubmitEvent: 'readonly',
-	HTMLElementEventMap: 'readonly',
+	setTimeout: 'readonly',
+	setInterval: 'readonly',
+	clearTimeout: 'readonly',
+	clearInterval: 'readonly',
+	setImmediate: 'readonly',
+	clearImmediate: 'readonly',
 };
 
 // Test-specific globals
@@ -42,6 +34,7 @@ const testGlobals = {
 	beforeAll: 'readonly',
 	afterAll: 'readonly',
 	jest: 'readonly',
+	vi: 'readonly',
 };
 
 export default [
@@ -53,8 +46,9 @@ export default [
 			parserOptions: {
 				ecmaVersion: 2022,
 				sourceType: 'module',
+				project: './tsconfig.json', // Enable type-aware linting
 			},
-			globals: commonGlobals,
+			globals: nodeGlobals,
 		},
 		plugins: {
 			'@typescript-eslint': typescript,
@@ -63,22 +57,34 @@ export default [
 		},
 		rules: {
 			...typescript.configs.recommended.rules,
+
+			// TypeScript rules
 			'@typescript-eslint/no-unused-vars': 'error',
 			'@typescript-eslint/explicit-function-return-type': 'warn',
 			'@typescript-eslint/no-explicit-any': 'warn',
 			'@typescript-eslint/no-inferrable-types': 'off',
+			'prefer-const': 'error',
+			'@typescript-eslint/no-var-requires': 'error',
+			'@typescript-eslint/consistent-type-imports': ['error', {
+				prefer: 'type-imports',
+				disallowTypeAnnotations: false,
+			}],
 
-			// Line length limit
 			'max-len': ['error', {
-				code: 100,
+				code: 120,
 				tabWidth: 2,
 				ignoreUrls: true,
 				ignoreStrings: true,
 				ignoreTemplateLiterals: true,
+				ignoreComments: true,
 			}],
+			'indent': ['error', 2],
+			'quotes': ['error', 'single', { avoidEscape: true }],
+			'semi': ['error', 'always'],
 
-			// Import rules - ensure imports are used and sorted
+			// Import rules
 			'import/no-unused-modules': 'error',
+			'import/no-duplicates': 'error',
 			'import/order': [
 				'error',
 				{
@@ -99,23 +105,30 @@ export default [
 			],
 			'unused-imports/no-unused-imports': 'error',
 
-			// Ensure newline at end of file
+			// General code quality
 			'eol-last': ['error', 'always'],
-
-			// Maximum 1 blank line between code blocks
 			'no-multiple-empty-lines': ['error', { max: 1, maxEOF: 0 }],
+			'no-trailing-spaces': 'error',
+			'object-curly-spacing': ['error', 'always'],
+			'array-bracket-spacing': ['error', 'never'],
+			'comma-dangle': ['error', 'always-multiline'],
 		},
 	},
 	{
-		files: ['**/__tests__/**/*', '**/*.test.*'],
+		files: ['**/__tests__/**/*', '**/*.test.*', '**/*.spec.*'],
 		languageOptions: {
 			globals: {
-				...commonGlobals,
+				...nodeGlobals,
 				...testGlobals,
 			},
 		},
+		rules: {
+			'@typescript-eslint/no-explicit-any': 'off',
+			'@typescript-eslint/explicit-function-return-type': 'off',
+			'max-len': 'off',
+		},
 	},
 	{
-		ignores: ['dist/', 'node_modules/', '*.js', 'coverage/'],
+		ignores: ['dist/', 'node_modules/', '*.js', 'coverage/', 'build/'],
 	},
 ];

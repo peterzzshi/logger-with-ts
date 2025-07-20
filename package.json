@@ -3,42 +3,56 @@
   "version": "1.0.0",
   "type": "module",
   "description": "Transaction-aware logger with contextual logging built with TypeScript",
-  "main": "dist/logger.js",
-  "types": "dist/logger.d.ts",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc",
     "clean": "rm -rf dist",
     "prebuild": "npm run clean",
     "dev": "tsx src/demo.ts",
-    "demo": "tsx src/demo.ts",
-    "test": "tsx --test **/*.test.ts",
-    "lint": "eslint .",
-    "lint:fix": "eslint . --fix"
+    "start": "node dist/demo.js",
+    "demo": "npm run build && npm run start",
+    "watch": "tsx watch src/demo.ts",
+    "lint": "eslint src/**/*.ts",
+    "lint:fix": "eslint src/**/*.ts --fix",
+    "lint:check": "eslint src/**/*.ts --max-warnings 0",
+    "format": "prettier --write src/**/*.ts",
+    "format:check": "prettier --check src/**/*.ts",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "type-check": "tsc --noEmit",
+    "validate": "npm run type-check && npm run lint:check && npm run test",
+    "prepublishOnly": "npm run validate && npm run build"
   },
+  "files": [
+    "dist",
+    "src",
+    "README.md"
+  ],
   "keywords": [
     "logger",
     "typescript",
     "context",
-    "async-local-storage"
+    "async-local-storage",
+    "structured-logging"
   ],
   "author": "Peter Shi",
   "license": "MIT",
+  "dependencies": {},
   "devDependencies": {
-    "@eslint/js": "^9.31.0",
-    "@eslint/plugin-kit": "^0.3.3",
+    "@eslint/js": "^9.0.0",
+    "@types/jest": "30.0.0",
     "@types/node": "^22.0.0",
-    "eslint": "^9.31.0",
-    "tsx": "^4.19.0",
+    "@typescript-eslint/eslint-plugin": "8.37.0",
+    "@typescript-eslint/parser": "8.37.0",
+    "eslint": "^9.0.0",
+    "eslint-plugin-import": "^2.29.0",
+    "eslint-plugin-unused-imports": "^4.0.0",
+    "jest": "^29.7.0",
+    "prettier": "^3.0.0",
+    "ts-jest": "^29.1.0",
+    "tsx": "^4.6.0",
     "typescript": "^5.8.3"
-  },
-  "files": [
-    "dist/**/*",
-    "README.md"
-  ],
-  "exports": {
-    ".": {
-      "import": "./dist/logger.js",
-      "types": "./dist/logger.d.ts"
-    }
   }
 }
