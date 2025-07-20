@@ -9,9 +9,8 @@
     "build": "tsc",
     "clean": "rm -rf dist",
     "prebuild": "npm run clean",
-    "dev": "tsx demo.ts",
-    "demo": "tsx demo.ts",
-    "start": "node dist/demo.js",
+    "dev": "tsx src/demo.ts",
+    "demo": "tsx src/demo.ts",
     "test": "tsx --test **/*.test.ts"
   },
   "keywords": [

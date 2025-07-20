@@ -1,14 +1,31 @@
-export type SourceRecordIdentifier = Readonly<Record<"sourceContext" | "sourceId", string>>;
+export const LOG_LEVELS = ["debug", "info", "warn", "error"] as const;
+export type LogLevel = (typeof LOG_LEVELS)[number];
+
+export type LoggingParameters = readonly [unknown] | readonly [string, unknown];
 
 export interface LogContextData {
     readonly tags: ReadonlySet<string>;
     readonly category: string | undefined;
-    readonly service: string | undefined;
-    readonly sourceRecordIdsBySourceContext: ReadonlyMap<string, ReadonlySet<string>>;
-    readonly transactionId: string | undefined;
-    readonly metadata: ReadonlyMap<string, unknown>;
+    readonly metadata: ReadonlyMap<string, string>;
+    readonly sessionId: string | undefined;
 }
 
-export const LOG_LEVELS = ["debug", "error", "info", "verbose", "warn"] as const;
-export type LogLevel = (typeof LOG_LEVELS)[number];
-export type LoggingParameters = readonly [unknown] | readonly [string, unknown];
+export interface LogOutput {
+    readonly level: LogLevel;
+    readonly message?: unknown;
+    readonly sessionId?: string;
+    readonly details: {
+        readonly tags?: string[];
+        readonly category?: string;
+        readonly metadata?: Record<string, string>;
+        readonly stack?: string;
+        readonly timestamp: string;
+    };
+}
+
+export interface Logger {
+    debug(...parameters: LoggingParameters): void;
+    info(...parameters: LoggingParameters): void;
+    warn(...parameters: LoggingParameters): void;
+    error(...parameters: LoggingParameters): void;
+}
