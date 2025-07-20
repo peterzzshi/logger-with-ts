@@ -11,7 +11,9 @@
     "prebuild": "npm run clean",
     "dev": "tsx src/demo.ts",
     "demo": "tsx src/demo.ts",
-    "test": "tsx --test **/*.test.ts"
+    "test": "tsx --test **/*.test.ts",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
   },
   "keywords": [
     "logger",
@@ -21,9 +23,11 @@
   ],
   "author": "Peter Shi",
   "license": "MIT",
-  "dependencies": {},
   "devDependencies": {
+    "@eslint/js": "^9.31.0",
+    "@eslint/plugin-kit": "^0.3.3",
     "@types/node": "^22.0.0",
+    "eslint": "^9.31.0",
     "tsx": "^4.19.0",
     "typescript": "^5.8.3"
   },
